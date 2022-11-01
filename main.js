@@ -12,15 +12,22 @@ const connectDb = new Pool({
     connectionString:url,
     ssl:false
 })
+// /insertUser?username=moha&fistname=mohammed&lastname=agha&age=19&location=gaza
 
-server.get('/insertUser',async function (request, response) {
+
+server.get('/insertuser',async function (request, response) {
     const db =await connectDb.connect()
     const userName = request.query.username
-    const userFirstName = request.query.firstnamr
+    const userFirstName = request.query.firstname
     const userLastName = request.query.lastname
-    const userAge = request.query.age
+    const userAge = parseInt(request.query.age)
     const userLocation = request.query.location
-    const users = await db.query('select * from users where id =' + uid +';')
+    const sql =`INSERT INTO users (username, first_name, last_name,age,location)
+    VALUES ('${userName}', '${userFirstName}', '${userLastName}', ${userAge} , '${userLocation}');`
+    console.log(sql);
+    console.log(request.query);
+    const query = await db.query(sql)
+    const users = await db.query('select * from users;')
     response.send(users.rows)
 })
 
